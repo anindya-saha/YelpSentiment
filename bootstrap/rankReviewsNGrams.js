@@ -10,7 +10,7 @@ var fs = require('fs');
 var readline = require('readline');
 var stream = require('stream');
 
-var fileLoc = './aux_files/grepResults_reviews.txt';
+var fileLoc = './aux_files/grepResults.txt';
 var outputFileLoc = './nv_files/rankReviewsNGramsFull';
 
 var istream = fs.createReadStream(fileLoc);

@@ -462,19 +462,18 @@ var rl = readline.createInterface(istream, ostream);
 function above_threshold(token, freq)
 {
 	var parts = token.split(' ');
-	switch(parts.length)
-	{
-	case 1: if (freq >= UNI_THRESH)
-				return true; 
-	case 2: if (freq >= BI_THRESH)
-				return true; 
-	case 3: if (freq >= TRI_THRESH)
-				return true; 
-	case 4: if (freq >= TETRA_THRESH)
-				return true; 
-	case 5: if (freq >= PENTA_THRESH)
-				return true; 
-	}
+	
+	if(parts.length == 1 && freq >= UNI_THRESH)
+	    return true; 
+	if(parts.length == 2 && freq >= BI_THRESH)
+	    return true; 
+	if(parts.length == 3 && freq >= TRI_THRESH)
+	    return true; 
+	if(parts.length == 4 && freq >= TETRA_THRESH)
+	    return true; 
+	if(parts.length == 5 && freq >= PENTA_THRESH)
+	    return true; 
+	
 	return false;
 }
 
@@ -511,5 +510,6 @@ rl.on('line', function(line) {
 });
 
 rl.on('close', function() {
+  wstream.end();	
   console.log('done');
 });

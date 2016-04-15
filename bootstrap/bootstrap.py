@@ -7,6 +7,7 @@ import re
 import threading
 import time
 import random
+import csv
 
 reviewCollection = []
 reviewsNew = []
@@ -20,8 +21,7 @@ iterate = True
 iter_num = 1
 index = 1
 
-path1 = "data/partition/train/"
-unlabeled_reviews = os.listdir(path1)
+unlabeled_reviews = "../data/partition/train/yelp_restaurants_reviews_positive.csv"
 ln_count = 0
 randomCollectionFiles = []
 collection_count = 0
@@ -45,15 +45,12 @@ with open("nv_files/rankReviewsNGramsFileN", "w") as ins2:
 open("results/reviewCollection.txt", "w").close()
 open("results/phraseDictionary", "w").close()
 open("results/logfile", "w").close()
-open("nv_files/rankReviewsNGramsFileAux", "w").close()
 open("aux_files/grepResults.txt", "w").close()
 open("aux_files/grepResults_t1.txt", "w").close()
 open("aux_files/grepResults_t2.txt", "w").close()
 open("aux_files/grepResults_t3.txt", "w").close()
 open("aux_files/grepResults_t4.txt", "w").close()
 open("aux_files/grepResults_t5.txt", "w").close()
-open("aux_files/grepResults_reviews.txt", "w").close()
-open("aux_files/randomCollection.txt", "w").close()
 
 flog = open("results/logfile", "w", 0)
 
@@ -84,8 +81,7 @@ class searchThread (threading.Thread):
         print >> flog, str(self.threadID) + "begin search"
 	collection_hit_count = 0
         fg = open(grepFileName, "w")
-        for tw_file in unlabeled_reviews:
-            file0 = os.path.join(path1, tw_file)
+        with open(unlabeled_reviews, 'rb') as file0:
             reader = csv.DictReader(file0)
             for row in reader:
                 line = row['text']
