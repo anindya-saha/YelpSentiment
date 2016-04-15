@@ -10,6 +10,7 @@ import random
 
 reviewCollection = []
 reviewsNew = []
+iterCollection = []
 
 arrayPhrases = []
 arrayPhrasesNFreq = []
@@ -19,7 +20,7 @@ iterate = True
 iter_num = 1
 index = 1
 
-path1 = "/data/reviews/"
+path1 = "data/partition/train/"
 unlabeled_reviews = os.listdir(path1)
 ln_count = 0
 randomCollectionFiles = []
@@ -39,7 +40,7 @@ if not os.path.exists("nv_files"):
     os.makedirs("nv_files")
 
 with open("nv_files/rankReviewsNGramsFileN", "w") as ins2:
-    ins2.write("tear gas:495")
+    ins2.write("great place:39")
 
 open("results/reviewCollection.txt", "w").close()
 open("results/phraseDictionary", "w").close()
@@ -85,14 +86,14 @@ class searchThread (threading.Thread):
         fg = open(grepFileName, "w")
         for tw_file in unlabeled_reviews:
             file0 = os.path.join(path1, tw_file)
-            text = open(file0, "r")
-            for line in text:
+            reader = csv.DictReader(file0)
+            for row in reader:
+                line = row['text']
                 if re.search(self.reg, line, re.IGNORECASE):
                     collection_count = collection_count + 1
 		    collection_hit_count = collection_hit_count + 1
                     print >> fg, line.rstrip()
 
-            text.close()
 	fg.close()
 			
         print str(self.threadID) + "collection_count_new:" + str(collection_count)
@@ -108,74 +109,30 @@ class searchThread (threading.Thread):
         f.close()
         
 	threadLock.acquire()
-        subprocess.check_call(["sh", "copy_grep_results.sh", "aux_files/grepResults.txt", grepFileName])
-	
-        print str(self.threadID) + "ln_count_prev:" + str(ln_count)
-        print >> flog, str(self.threadID) + "ln_count_prev:" + str(ln_count)
-	fr = open("aux_files/randomCollection.txt", "a")
-        for tw_file in unlabeled_reviews:
-            file0 = os.path.join(path1, tw_file)
-            if file0 not in randomCollectionFiles:
-                randomCollectionFiles.append(file0)
-                text = open(file0, "r")
-
-                for line in text:
-                    ln_count = ln_count + 1
-                    print >> fr, line.rstrip()
-                    if ln_count == collection_count:
-		        break
-
-                text.close()
+        #subprocess.check_call(["sh", "copy_grep_results.sh", "aux_files/grepResults.txt", grepFileName])
+	print str(self.threadID) + 'only retain diff for analysis'            
+        print >> flog, str(self.threadID) + 'only retain diff for analysis'            
+        #find diff
+        with open(grepFileName, "r") as twfile:
+            for twt in twfile:
+                if twt not in iterCollection:
+                    reviewsNew.append(twt)
+                    #add diff to current collection
+                    iterCollection.append(twt)
             
-	    if ln_count == collection_count:
-	        break
-	
-	fr.close()
-        print str(self.threadID) + "ln_count_new:" + str(ln_count)
-        print >> flog, str(self.threadID) + "ln_count_new:" + str(ln_count)
-
-        random_hit_count = 0
-	fr = open('aux_files/randomCollection.txt', "r")
-        for line in fr:
-            if re.search(self.reg, line, re.IGNORECASE):
-                random_hit_count = random_hit_count + 1
-        fr.close()
-
-        print str(self.threadID) + "random_hit_count:" + str(random_hit_count)
-        print >> flog, str(self.threadID) + "random_hit_count:" + str(random_hit_count)
-        specificity = random_hit_count / collection_hit_count
-	print str(self.threadID) + "specificity: " + str(specificity)
-	print >> flog, str(self.threadID) + "specificity: " + str(specificity)
-        
-        if specificity < specificity_threshold:
-
-	    print str(self.threadID) + 'only retain diff for analysis'            
-	    print >> flog, str(self.threadID) + 'only retain diff for analysis'            
-	    #find diff
-	    with open('aux_files/grepResults.txt', "r") as twfile:
-	        for twt in twfile:
-	            if twt not in reviewCollection:
-	                reviewsNew.append(twt)
-	                #add diff to current collection
-	                reviewCollection.append(twt)
-	        
-	    #save only diff in file
-	    open("aux_files/grepResults.txt", "w").close()
-	    with open('aux_files/grepResults.txt', "w") as twfile:
-	        for twt in reviewsNew:
-	            twfile.write("%s" % twt)
-	                 
-	    #append in collection file
-	    with open('results/reviewCollection.txt', "a") as twfile1:
-	        for twt in reviewsNew:
-	            twfile1.write("%s" % twt)             
-	
-	    reviewsNew[:] = []
-	            
+        #save only diff in file
+        #open("aux_files/grepResults.txt", "w").close()
+        with open('aux_files/grepResults.txt', "a") as twfile:
+            for twt in reviewsNew:
+                twfile.write("%s" % twt)
+                     
+        reviewsNew[:] = []
+                
         open(grepFileName, "w").close()
-	            
+                
         threadLock.release()
         threads.remove(self)
+	    
 
 while iterate == True:
 
@@ -219,9 +176,9 @@ while iterate == True:
             t.join()
         
     #extract reviews text
-    print 'reviews text'
-    print >> flog, 'reviews text'
-    subprocess.check_call(["node", "reviewTexts.js"])
+    #print 'reviews text'
+    #print >> flog, 'reviews text'
+    #subprocess.check_call(["node", "reviewTexts.js"])
             
     #rank and add to rankReviewsNGramsFileN; add reviews not already in set
     print 'rank phrases'
@@ -241,6 +198,12 @@ while iterate == True:
     directory = "results/iter" + str(iter_num)
     if not os.path.exists(directory):
         os.makedirs(directory)
+        
+    for twt in iterCollection:
+        if twt not in reviewCollection:
+            reviewCollection.append(twt)
+            
+    iterCollection[:] = []         
     
     open("nv_files/rankReviewsNGrams", "w").close()
     open("nv_files/rankReviewsNGramsFull", "w").close()
