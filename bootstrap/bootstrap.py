@@ -110,7 +110,7 @@ class searchThread (threading.Thread):
         #find diff
         with open(grepFileName, "r") as twfile:
             for twt in twfile:
-                if twt not in iterCollection:
+                if twt not in reviewCollection:
                     reviewsNew.append(twt)
                     #add diff to current collection
                     iterCollection.append(twt)
