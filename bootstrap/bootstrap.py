@@ -109,7 +109,6 @@ class searchThread (threading.Thread):
         f.close()
         
 	threadLock.acquire()
-        #subprocess.check_call(["sh", "copy_grep_results.sh", "aux_files/grepResults.txt", grepFileName])
 	print str(self.threadID) + 'only retain diff for analysis'            
         print >> flog, str(self.threadID) + 'only retain diff for analysis'            
         #find diff
@@ -121,7 +120,6 @@ class searchThread (threading.Thread):
                     iterCollection.append(twt)
             
         #save only diff in file
-        #open("aux_files/grepResults.txt", "w").close()
         with open('aux_files/grepResults.txt', "a") as twfile:
             for twt in reviewsNew:
                 twfile.write("%s" % twt)
@@ -174,12 +172,7 @@ while iterate == True:
     	
         for t in threads:
             t.join()
-        
-    #extract reviews text
-    #print 'reviews text'
-    #print >> flog, 'reviews text'
-    #subprocess.check_call(["node", "reviewTexts.js"])
-            
+                    
     #rank and add to rankReviewsNGramsFileN; add reviews not already in set
     print 'rank phrases'
     subprocess.check_call(["node", "rankReviewsNGrams.js"])
@@ -187,13 +180,6 @@ while iterate == True:
     subprocess.check_call(["node", "preFilter.js"])
     v = raw_input()
 
-    with open("nv_files/rankReviewsNGrams", "r") as ins1:
-        with open("nv_files/rankReviewsNGramsFileAux", "w") as ins2:
-            for line1 in ins1:
-                ins2.write(line1)
-                print line1
-                print >> flog, line1
-                                
     #backup iteration files
     directory = "results/iter" + str(iter_num)
     if not os.path.exists(directory):
@@ -204,24 +190,20 @@ while iterate == True:
             reviewCollection.append(twt)
             
     iterCollection[:] = []         
-    
-    open("nv_files/rankReviewsNGrams", "w").close()
-    open("nv_files/rankReviewsNGramsFull", "w").close()
-
+        
     directory = "results/iter" + str(iter_num)
     subprocess.check_call(["sh", "backup_iteration_files.sh", directory])
-    
-    open("aux_files/grepResults.txt", "w").close()
-    open("aux_files/grepResults_reviews.txt", "w").close()
     
     iter_num = iter_num + 1
     
     open("nv_files/rankReviewsNGramsFileN", "w").close()
 
-    with open("nv_files/rankReviewsNGramsFileAux", "r") as ins1:
+    with open("nv_files/rankReviewsNGrams", "r") as ins1:
         with open("nv_files/rankReviewsNGramsFileN", "w") as ins2:
             for line1 in ins1:
                 ins2.write(line1)
         
-    open("nv_files/rankReviewsNGramsFileAux", "w").close()
-
+    open("nv_files/rankReviewsNGrams", "w").close()
+    open("nv_files/rankReviewsNGramsFull", "w").close()
+    open("aux_files/grepResults.txt", "w").close()
+    

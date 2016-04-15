@@ -1,5 +1,5 @@
 cp "nv_files/rankReviewsNGramsFileN" "$1/rankReviewsNGramsFileN"
-cp "nv_files/rankReviewsNGramsFileAux" "$1/rankReviewsNGramsFileAux"
+cp "nv_files/rankTweetsNGrams" "$1/rankTweetsNGrams"
 cp "nv_files/rankReviewsNGramsFull" "$1/rankReviewsNGramsFull"
 cp "aux_files/grepResults.txt" "$1/grepResults.txt"
 cp "results/reviewCollection.txt" "$1/reviewCollection.txt"
