@@ -20,6 +20,7 @@ threshold = 15
 iterate = True
 iter_num = 1
 index = 1
+MAX_ITER = 40
 
 unlabeled_reviews = "../data/partition/train/yelp_restaurants_reviews_positive.csv"
 ln_count = 0
@@ -85,7 +86,8 @@ class searchThread (threading.Thread):
             reader = csv.DictReader(file0)
             for row in reader:
                 line = row['text']
-                if re.search(self.reg, line, re.IGNORECASE):
+                line = line.lower()
+                if line.find(self.phrase) > -1:
                     collection_count = collection_count + 1
 		    collection_hit_count = collection_hit_count + 1
                     print >> fg, line.rstrip()
@@ -162,7 +164,7 @@ while iterate == True:
             while len(threads) == MAX_THREADS:
 		        time.sleep(WAIT_TIME)
 
-            sThread = searchThread(len(threads)+1, "sThread"+str(len(threads)+1), reg, str1)
+            sThread = searchThread(len(threads)+1, "sThread"+str(len(threads)+1), reg, str1.lower())
             threads.append(sThread)
             sThread.start()
     	
@@ -174,16 +176,18 @@ while iterate == True:
     subprocess.check_call(["node", "rankReviewsNGrams.js"])
     print 'filter phrases'
     subprocess.check_call(["node", "preFilter.js"])
-    v = raw_input()
+    #v = raw_input()
 
     #backup iteration files
     directory = "results/iter" + str(iter_num)
     if not os.path.exists(directory):
         os.makedirs(directory)
         
-    for twt in iterCollection:
-        if twt not in reviewCollection:
-            reviewCollection.append(twt)
+    with open('results/reviewCollection.txt', "a") as rvfile1:
+        for twt in iterCollection:
+            if twt not in reviewCollection:
+                reviewCollection.append(twt)
+                rvfile1.write("%s" % twt)
             
     iterCollection[:] = []         
         
@@ -203,3 +207,5 @@ while iterate == True:
     open("nv_files/rankReviewsNGramsFull", "w").close()
     open("aux_files/grepResults.txt", "w").close()
     
+    if iter_num > MAX_ITER:
+        iterate = FALSE
