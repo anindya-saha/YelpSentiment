@@ -40,16 +40,16 @@ for j in range(len(arrayPositive)):
         numTPMatches += 1
         
 numTNMatches = 0 
-for j in range(len(arrayPositive)):
+for j in range(len(arrayNegative)):
     matches = False
     for i in range(len(arrayPhrases)):
 	    w = arrayPhrases[i]
 
-	    if arrayPositive[j].find(w) > -1:
+	    if arrayNegative[j].find(w) > -1:
 	        matches = True
 	        break
 	        
-    if matches == True:
+    if matches == False:
         numTNMatches += 1
         
 print "Accuracy = " + str((numTPMatches+numTNMatches)/(len(arrayPositive) + len(arrayNegative)))             
