@@ -26,7 +26,7 @@ with open("../../data/partition/validate/yelp_restaurants_reviews_negative.csv",
         text = line['text']
         arrayNegative.append(text)
 
-numMatches = 0 
+numTPMatches = 0 
 for j in range(len(arrayPositive)):
     matches = False
     for i in range(len(arrayPhrases)):
@@ -37,9 +37,22 @@ for j in range(len(arrayPositive)):
 	        break
 	        
     if matches == True:
-        numMatches += 1
+        numTPMatches += 1
         
-print "Accuracy = " + str(numMatches) + "/" + str(len(arrayPositive)) + " = " + str(numMatches/len(arrayPositive))             
+numTNMatches = 0 
+for j in range(len(arrayPositive)):
+    matches = False
+    for i in range(len(arrayPhrases)):
+	    w = arrayPhrases[i]
+
+	    if arrayPositive[j].find(w) > -1:
+	        matches = True
+	        break
+	        
+    if matches == True:
+        numTNMatches += 1
+        
+print "Accuracy = " + str((numTPMatches+numTNMatches)/(len(arrayPositive) + len(arrayNegative)))             
                         
 print "Phrase \t\t\t\t Positive \t\t Negative"
 for i in range(len(arrayPhrases)):
