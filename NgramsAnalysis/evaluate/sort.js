@@ -10,8 +10,8 @@ var fs = require('fs');
 var readline = require('readline');
 var stream = require('stream');
 
-var fileLoc = './NegativePhrasesFiltered';
-var outputFileLoc = './NegativePhrasesSorted';
+var fileLoc = './NegativeNgramsFiltered';
+var outputFileLoc = './NegativeNgramsSorted';
 
 var istream = fs.createReadStream(fileLoc);
 var ostream = new stream;
@@ -23,10 +23,12 @@ var ngrams = {};
 var rl = readline.createInterface(istream, ostream);
 
 rl.on('line', function(line) {
-  var index = line.lastIndexOf(':');
-  var token = line.substring(0, index);
-  var freq = parseInt(line.substring(index+1));
-  ngrams[token] = freq;
+  if (line.indexOf(' ') != -1) {
+      var index = line.lastIndexOf(':');
+      var token = line.substring(0, index);
+      var freq = parseInt(line.substring(index+1));
+      ngrams[token] = freq;
+  }
 });
 
 rl.on('close', function() {
