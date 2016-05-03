@@ -3,26 +3,26 @@ import csv
 
 arrayNegative = []
 arrayPositive = []
-arrayPositivePhrases = []
-arrayPositivePhrasesWithFreq = []
-arrayNegativePhrases = []
-arrayNegativePhrasesWithFreq = []
+arrayPositiveNgrams = []
+arrayPositiveNgramsWithFreq = []
+arrayNegativeNgrams = []
+arrayNegativeNgramsWithFreq = []
 
-with open("PositivePhrasesFiltered", "r") as ins:
+with open("PositiveNgramsFiltered", "r") as ins:
     for line in ins:
         lastIndex = line.rfind(':')
         str1 = line[:lastIndex]
         str1.strip()
-        arrayPositivePhrases.append(str1)
-        arrayPositivePhrasesWithFreq.append(line)
+        arrayPositiveNgrams.append(str1)
+        arrayPositiveNgramsWithFreq.append(line)
         
-with open("NegativePhrasesFiltered", "r") as ins:
+with open("NegativeNgramsFiltered", "r") as ins:
     for line in ins:
         lastIndex = line.rfind(':')
         str1 = line[:lastIndex]
         str1.strip()
-        arrayNegativePhrases.append(str1)
-        arrayNegativePhrasesWithFreq.append(line)        
+        arrayNegativeNgrams.append(str1)
+        arrayNegativeNgramsWithFreq.append(line)        
         
 with open("../../data/partition/validate/yelp_restaurants_reviews_positive.csv", "r") as f0:
     ins = csv.DictReader(f0)
@@ -40,15 +40,15 @@ numTPMatches = 0
 for j in range(len(arrayPositive)):
     matchesP = False
     matchesN = False
-    for i in range(len(arrayPositivePhrases)):
-	    w = arrayPositivePhrases[i]
+    for i in range(len(arrayPositiveNgrams)):
+	    w = arrayPositiveNgrams[i]
 
 	    if arrayPositive[j].find(w) > -1:
 	        matchesP = True
 	        break
         
-    #for i in range(len(arrayNegativePhrases)):
-	#    w = arrayNegativePhrases[i]
+    #for i in range(len(arrayNegativeNgrams)):
+	#    w = arrayNegativeNgrams[i]
 
 	#    if arrayPositive[j].find(w) > -1:
 	#        matchesN = True
@@ -62,15 +62,15 @@ numTNMatches = 0
 for j in range(len(arrayNegative)):
     matchesP = False
     matchesN = False
-    for i in range(len(arrayPositivePhrases)):
-	    w = arrayPositivePhrases[i]
+    for i in range(len(arrayPositiveNgrams)):
+	    w = arrayPositiveNgrams[i]
 
 	    if arrayNegative[j].find(w) > -1:
 	        matchesN = True
 	        break
 	
-    #for i in range(len(arrayPositivePhrases)):
-	#    w = arrayPositivePhrases[i]
+    #for i in range(len(arrayPositiveNgrams)):
+	#    w = arrayPositiveNgrams[i]
 
 	#    if arrayNegative[j].find(w) > -1:
 	#        matchesP = False
@@ -81,9 +81,9 @@ for j in range(len(arrayNegative)):
         
 print "Accuracy = " + str((numTPMatches+numTNMatches)/(len(arrayPositive) + len(arrayNegative)))             
                         
-print "Phrase \t\t\t\t Positive \t\t Negative"
-for i in range(len(arrayPositivePhrases)):
-    w = arrayPositivePhrases[i]
+print "ngram \t\t\t\t Positive \t\t Negative"
+for i in range(len(arrayPositiveNgrams)):
+    w = arrayPositiveNgrams[i]
 
     positiveMatches = 0;
     for j in range(len(arrayPositive)):
@@ -95,6 +95,6 @@ for i in range(len(arrayPositivePhrases)):
         if arrayNegative[j].find(w) > -1:
             negativeMatches += 1
     
-    print arrayPhrases[i] + "\t\t\t" + str(positiveMatches) + "/" + str(len(arrayPositive)) + "\t\t\t" + str(negativeMatches) + "/" + str(len(arrayNegative))
+    print arrayPositiveNgrams[i] + "\t\t\t" + str(positiveMatches) + "/" + str(len(arrayPositive)) + "\t\t\t" + str(negativeMatches) + "/" + str(len(arrayNegative))
     #print str(positiveMatches/len(arrayPositive)) + "\t\t" + str(negativeMatches/len(arrayNegative))
     	  

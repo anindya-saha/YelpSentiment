@@ -1,34 +1,34 @@
-arrayNegativePhrases = []
-arrayPositivePhrases = []
-arrayPositivePhrasesWithFreq = []
-arrayNegativePhrasesWithFreq = []
+arrayNegativeNgrams = []
+arrayPositiveNgrams = []
+arrayPositiveNgramsWithFreq = []
+arrayNegativeNgramsWithFreq = []
 
-with open("PositivePhrases", "r") as ins:
+with open("positiveNgrams", "r") as ins:
     for line in ins:
         lastIndex = line.rfind(':')
         str1 = line[:lastIndex]
         str1.strip()
-        arrayPositivePhrases.append(str1)
-        arrayPositivePhrasesWithFreq.append(line)
+        arrayPositiveNgrams.append(str1)
+        arrayPositiveNgramsWithFreq.append(line)
         
-with open("NegativePhrases", "r") as ins:
+with open("negativeNgrams", "r") as ins:
     for line in ins:
         lastIndex = line.rfind(':')
         str1 = line[:lastIndex]
         str1.strip()
-        arrayNegativePhrases.append(str1)
-        arrayNegativePhrasesWithFreq.append(line)
+        arrayNegativeNgrams.append(str1)
+        arrayNegativeNgramsWithFreq.append(line)
         
-f = open("PositivePhrasesFiltered", "w")
-for phrase in arrayPositivePhrases:
-    if phrase not in arrayNegativePhrases:
-        indexP = arrayPositivePhrases.index(phrase)
-        f.write(arrayPositivePhrasesWithFreq[indexP])
+f = open("positiveNgramsFiltered", "w")
+for ngram in arrayPositiveNgrams:
+    if ngram not in arrayNegativeNgrams:
+        indexP = arrayPositiveNgrams.index(ngram)
+        f.write(arrayPositiveNgramsWithFreq[indexP])
 f.close()
 
-f = open("NegativePhrasesFiltered", "w")
-for phrase in arrayNegativePhrases:
-    if phrase not in arrayPositivePhrases:
-        indexP = arrayNegativePhrases.index(phrase)
-        f.write(arrayNegativePhrasesWithFreq[indexP])
+f = open("negativeNgramsFiltered", "w")
+for ngram in arrayNegativeNgrams:
+    if ngram not in arrayPositiveNgrams:
+        indexP = arrayNegativeNgrams.index(ngram)
+        f.write(arrayNegativeNgramsWithFreq[indexP])
 f.close()
