@@ -3,11 +3,11 @@ CSCE-689 NLP Seminar Course Project - Yelp Reviews Sentiment Analysis
 
 Generating Ngrams:
 
-For generation of Positive Ngrams, go to bootstrap directory and execute:-
+For generation of Positive Ngrams, go to NgramsAnalysis directory and execute:-
 python PositiveNGrams.py
 
 
-For generation of Negative Ngrams, go to bootstrap directory and execute:-
+For generation of Negative Ngrams, go to NgramsAnalysis directory and execute:-
 python NegativeNGrams.py
 
 
